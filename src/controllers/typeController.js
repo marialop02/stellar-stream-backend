@@ -46,3 +46,15 @@ exports.updateType = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.deleteType = async (req, res) => {
+    try {
+        const type = await Type.findByIdAndDelete(req.params.id);
+        if (!type) {
+            return res.status(404).json({ message: 'Tipo no encontrado' });
+        }
+        res.status(200).json({ message: 'Tipo eliminado exitosamente', type });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

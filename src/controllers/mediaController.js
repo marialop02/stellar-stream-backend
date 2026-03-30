@@ -81,7 +81,7 @@ exports.getMediaById = async (req, res) => {
 
 exports.updateMedia = async (req, res) => {
     try {
-        const { url, genero, director, productora } = req.body;
+        const { url, genero, director, productora, tipo } = req.body;
 
         if (url) {
             const uExist = await Media.findOne({ url, _id: { $ne: req.params.id } });

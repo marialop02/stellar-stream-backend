@@ -49,27 +49,20 @@ const MediaSchema = new Schema({
     timestamps: true
 });
 
-MediaSchema.pre('validate', async function (next) {
+MediaSchema.pre('validate', async function () {
     if (this.isNew && !this.serial) {
-        try {
-            const lastMedia = await this.constructor.findOne({}, 'serial')
-                                        .sort({ createdAt: -1 });
-            
-            let nextNum = 1;
-            if (lastMedia && lastMedia.serial) {
-                const parts = lastMedia.serial.split('-');
-                if (parts.length === 2 && !isNaN(parts[1])) {
-                    nextNum = parseInt(parts[1], 10) + 1;
-                }
+        const lastMedia = await this.constructor.findOne({}, 'serial')
+                                    .sort({ createdAt: -1 });
+        
+        let nextNum = 1;
+        if (lastMedia && lastMedia.serial) {
+            const parts = lastMedia.serial.split('-');
+            if (parts.length === 2 && !isNaN(parts[1])) {
+                nextNum = parseInt(parts[1], 10) + 1;
             }
-            
-            this.serial = `PEL-${nextNum.toString().padStart(4, '0')}`;
-            next();
-        } catch (error) {
-            next(error);
         }
-    } else {
-        next();
+        
+        this.serial = `PEL-${nextNum.toString().padStart(4, '0')}`;
     }
 });
 
